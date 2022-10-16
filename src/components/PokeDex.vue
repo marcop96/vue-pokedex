@@ -26,7 +26,30 @@
       </div>
     </div>
 
-    <div id="pokemon-grid" class="grid grid-cols-4 grid-rows-5"></div>
+    <div id="pokemon-list" class="ml-4 mt-4">
+      <ul>
+        <li>Pokemon1</li>
+        <li>Pokemon2</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+        <li>asd</li>
+      </ul>
+    </div>
   </div>
 </template>
 
