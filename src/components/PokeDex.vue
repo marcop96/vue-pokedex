@@ -8,7 +8,7 @@
           placeholder="Search a Pokemon"
           class="input input-bordered w-96 bg-yellow-200"
         />
-        <button class="btn btn-square bg-red-500" @click="pokemonInfo()">
+        <button class="btn btn-square bg-red-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -30,7 +30,13 @@
     <div class="flex justify-start items-center mt-11 ml-5">
       <div id="pokemon-list">
         <ul>
-          <li v-for="pokemon in pokemons" @click="clickedPokemon = pokemon.url">
+          <li
+            v-for="pokemon in pokemons"
+            @click="
+              clickedPokemon = pokemon.url;
+              pokemonInfo();
+            "
+          >
             {{ pokemon.name }}
           </li>
         </ul>
@@ -38,19 +44,22 @@
 
       <div
         id="pokemon-info-container"
-        class="h-96 w-2/5 border-4 border-red-500 mx-auto flex flex-col items-center"
+        class="h-96 w-2/5 -4 mx-auto flex flex-col items-center"
       >
         <div class="img">
           <img
-            src="https://images.freeimages.com/images/large-previews/8a5/shooting-the-sunset-1381775.jpg"
+            :src="pokemonPicture"
+            class="object-scale-down"
+            width="300"
+            height="300"
           />
         </div>
         <div class="info">
           <ul>
-            <li>Name</li>
-            <li>type</li>
-            <li>INFO</li>
-            <li>MORE INFO</li>
+            <li class="font-bold text-xl">ID {{ pokemonId }}</li>
+            <li class="font-bold text-xl">Name {{ pokemonName }}</li>
+            <li class="font-bold text-xl">Type {{ pokemonTypes }}</li>
+            <li class="font-bold text-xl">MORE INFO</li>
           </ul>
         </div>
       </div>
@@ -61,8 +70,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 const clickedPokemon = ref("");
-const pokemons = ref();
+const pokemons = ref("");
 const pokemonId = ref("");
+const pokemonName = ref("");
+const pokemonTypes = ref("");
+
+const pokemonPicture = ref(".");
 function obtainPokemons() {
   fetch("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0")
     .then((response) => response.json())
@@ -73,7 +86,16 @@ obtainPokemons();
 function pokemonInfo() {
   fetch(clickedPokemon.value)
     .then((response) => response.json())
-    .then((data) => (pokemonId.value = data.id));
-  console.log(pokemonId.value);
+    .then((data) => {
+      pokemonId.value = data.id;
+      pokemonName.value = data.name;
+      pokemonTypes.value = data.types[0].type.name;
+
+      pokemonPicture.value =
+        data.sprites.other["official-artwork"]["front_default"];
+      console.log(
+        ` id ${pokemonId.value} name ${pokemonName.value} picture ${pokemonPicture.value}`
+      );
+    });
 }
 </script>
