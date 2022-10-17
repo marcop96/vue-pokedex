@@ -56,10 +56,11 @@
         </div>
         <div class="info">
           <ul>
-            <li class="font-bold text-xl">ID {{ pokemonId }}</li>
-            <li class="font-bold text-xl">Name {{ pokemonName }}</li>
-            <li class="font-bold text-xl">Type {{ pokemonTypes }}</li>
-            <li class="font-bold text-xl">MORE INFO</li>
+            <li class="font-bold text-xl">ID: {{ pokemonId }}</li>
+            <li class="font-bold text-xl">Name: {{ pokemonName }}</li>
+            <li class="font-bold text-xl">Type: {{ pokemonTypes }}</li>
+            <li class="font-bold text-xl">Height: {{ pokemonHeight }} cm</li>
+            <li class="font-bold text-xl">Weight: {{ pokemonWeight }} kg</li>
           </ul>
         </div>
       </div>
@@ -74,6 +75,8 @@ const pokemons = ref("");
 const pokemonId = ref("");
 const pokemonName = ref("");
 const pokemonTypes = ref("");
+const pokemonHeight = ref("");
+const pokemonWeight = ref();
 
 const pokemonPicture = ref(".");
 function obtainPokemons() {
@@ -90,12 +93,11 @@ function pokemonInfo() {
       pokemonId.value = data.id;
       pokemonName.value = data.name;
       pokemonTypes.value = data.types[0].type.name;
+      pokemonHeight.value = data.height;
+      pokemonWeight.value = data.weight / 10;
 
       pokemonPicture.value =
         data.sprites.other["official-artwork"]["front_default"];
-      console.log(
-        ` id ${pokemonId.value} name ${pokemonName.value} picture ${pokemonPicture.value}`
-      );
     });
 }
 </script>
