@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-yellow-200 h-screen">
     <NavBar></NavBar>
     <PokeDex></PokeDex>
   </div>

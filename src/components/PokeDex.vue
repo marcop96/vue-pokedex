@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <template>
-  <div class="bg-yellow-200 h-screen">
+  <div>
     <div id="search-bar" class="form-control">
       <div class="input-group place-content-center mt-6">
         <input
@@ -33,7 +33,7 @@
           <li
             v-for="pokemon in pokemons"
             @click="
-              clickedPokemon = pokemon.url;
+              clickedPokemonURL = pokemon.url;
               pokemonInfo();
             "
           >
@@ -65,29 +65,48 @@
         </div>
       </div>
     </div>
+
+    <PaginationSystem :number-of-pages="countPokemons"></PaginationSystem>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-const clickedPokemon = ref("");
+import { ref, computed } from "vue";
+import PaginationSystem from "./PaginationSystem.vue";
+
+const clickedPokemonURL = ref("");
+const nextPokemonURL = ref("");
+
+const totalPokemonCount = ref();
+
+const countPokemons = computed(() => {
+  return Math.floor(totalPokemonCount.value / 20);
+});
+
 const pokemons = ref("");
 const pokemonId = ref("");
 const pokemonName = ref("");
 const pokemonTypes = ref("");
 const pokemonHeight = ref("");
 const pokemonWeight = ref();
+const pokemonPicture = ref("");
 
-const pokemonPicture = ref(".");
+const activePage = ref("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0");
 function obtainPokemons() {
-  fetch("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0")
+  fetch(activePage.value)
     .then((response) => response.json())
-    .then((data) => (pokemons.value = data.results));
+    .then((data) => {
+      pokemons.value = data.results;
+      nextPokemonURL.value = data.next;
+      totalPokemonCount.value = data.count;
+      console.log(totalPokemonCount.value);
+    });
 }
+
 obtainPokemons();
 
 function pokemonInfo() {
-  fetch(clickedPokemon.value)
+  fetch(clickedPokemonURL.value)
     .then((response) => response.json())
     .then((data) => {
       pokemonId.value = data.id;
