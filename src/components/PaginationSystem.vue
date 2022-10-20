@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <n-pagination v-model:page="page" :page-count="numberOfPages" />
-  </div>
+  <n-pagination v-model:page="page" :page-count="numberOfPages" />
 </template>
 
 <script setup lang="ts">

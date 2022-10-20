@@ -29,17 +29,19 @@
 
     <div class="flex justify-start items-center mt-11 ml-5">
       <div id="pokemon-list">
-        <ul>
-          <li
-            v-for="pokemon in pokemons"
-            @click="
-              clickedPokemonURL = pokemon.url;
-              obtainPokemonInfo();
-            "
-          >
-            {{ pokemon.name }}
-          </li>
-        </ul>
+        <n-scrollbar style="max-height: 500px">
+          <ul>
+            <li
+              v-for="pokemon in pokemons"
+              @click="
+                clickedPokemonURL = pokemon.url;
+                obtainPokemonInfo();
+              "
+            >
+              {{ pokemon.name }}
+            </li>
+          </ul>
+        </n-scrollbar>
       </div>
 
       <div
@@ -70,30 +72,39 @@
       </div>
     </div>
 
-    <PaginationSystem :number-of-pages="countPokemons"></PaginationSystem>
+    <!-- <PaginationSystem :number-of-pages="countPokemons"></PaginationSystem> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { NScrollbar } from "naive-ui";
 
 //Ref declares REACTIVE TYPES
 import type { Ref } from "vue";
 //import  new types
 import type { PokemonStats, ObtainPokemonResponse } from "@/types/types";
 //components
-import PaginationSystem from "./PaginationSystem.vue";
+// import PaginationSystem from "./PaginationSystem.vue";
+
+// const obtainPokemons = ref({
+//   clickedPokemonURL: null,
+//   prevPokemonURL: null,
+//   nextPokemonURL: null,
+//   totalPokemonCount: null,
+// });
 
 const clickedPokemonURL = ref("");
 const nextPokemonURL: Ref<null | string> = ref("");
-
 const totalPokemonCount = ref();
-
 const countPokemons = computed(() => {
   return Math.floor(totalPokemonCount.value / 20);
 });
+
 const pokemons = ref();
+
 //declaro null para no tener errores en el futuro con los tipos
+
 const pokemonStats: Ref<PokemonStats> = ref({
   id: null,
   name: null,
@@ -103,11 +114,11 @@ const pokemonStats: Ref<PokemonStats> = ref({
   picture: null,
 });
 
-const activePage = ref("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0");
-//function obtainPokemons() {
-//}
+const activePage = ref(
+  "https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0"
+);
 
-//obtainPokemons();
+//obtain initial pokemon response and gross data
 onMounted(() => {
   fetch(activePage.value)
     .then((response) => response.json())
@@ -115,7 +126,7 @@ onMounted(() => {
       //for setting up the list
       pokemons.value = data.results;
 
-      //by default this would be page 2
+      //by default next would be page 2
       nextPokemonURL.value = data.next;
       totalPokemonCount.value = data.count;
     });
