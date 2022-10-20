@@ -34,7 +34,7 @@
             v-for="pokemon in pokemons"
             @click="
               clickedPokemonURL = pokemon.url;
-              pokemonInfo();
+              obtainPokemonInfo();
             "
           >
             {{ pokemon.name }}
@@ -48,7 +48,7 @@
       >
         <div class="img">
           <img
-            :src="pokemonPicture"
+            :src="pokemonStats.picture as string"
             class="object-scale-down"
             width="300"
             height="300"
@@ -56,11 +56,15 @@
         </div>
         <div class="info">
           <ul>
-            <li class="font-bold text-xl">ID: {{ pokemonId }}</li>
-            <li class="font-bold text-xl">Name: {{ pokemonName }}</li>
-            <li class="font-bold text-xl">Type: {{ pokemonTypes }}</li>
-            <li class="font-bold text-xl">Height: {{ pokemonHeight }} cm</li>
-            <li class="font-bold text-xl">Weight: {{ pokemonWeight }} kg</li>
+            <li class="font-bold text-xl">ID: {{ pokemonStats.id }}</li>
+            <li class="font-bold text-xl">Name: {{ pokemonStats.name }}</li>
+            <li class="font-bold text-xl">Type: {{ pokemonStats.types }}</li>
+            <li class="font-bold text-xl">
+              Height: {{ pokemonStats.height }} cm
+            </li>
+            <li class="font-bold text-xl">
+              Weight: {{ pokemonStats.weight }} kg
+            </li>
           </ul>
         </div>
       </div>
@@ -72,50 +76,57 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+//import  new types
+import type { Ref } from "vue";
+import type { PokemonStats, ObtainPokemonResponse } from "@/types/types";
+//components
 import PaginationSystem from "./PaginationSystem.vue";
 
 const clickedPokemonURL = ref("");
-const nextPokemonURL = ref("");
+const nextPokemonURL: Ref<null | string> = ref("");
 
 const totalPokemonCount = ref();
 
 const countPokemons = computed(() => {
   return Math.floor(totalPokemonCount.value / 20);
 });
-
-const pokemons = ref("");
-const pokemonId = ref("");
-const pokemonName = ref("");
-const pokemonTypes = ref("");
-const pokemonHeight = ref("");
-const pokemonWeight = ref();
-const pokemonPicture = ref("");
+const pokemons = ref();
+//declaro null para no tener errores en el futuro con los tipos
+const pokemonStats: Ref<PokemonStats> = ref({
+  id: null,
+  name: null,
+  types: null,
+  height: null,
+  weight: null,
+  picture: "@/assets/pokemon_outline.png",
+});
 
 const activePage = ref("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0");
 function obtainPokemons() {
   fetch(activePage.value)
     .then((response) => response.json())
-    .then((data) => {
+    .then((data: ObtainPokemonResponse) => {
+      //for setting up the list
       pokemons.value = data.results;
+
+      //by default this would be page 2
       nextPokemonURL.value = data.next;
       totalPokemonCount.value = data.count;
-      console.log(totalPokemonCount.value);
     });
 }
 
 obtainPokemons();
 
-function pokemonInfo() {
+function obtainPokemonInfo() {
   fetch(clickedPokemonURL.value)
     .then((response) => response.json())
     .then((data) => {
-      pokemonId.value = data.id;
-      pokemonName.value = data.name;
-      pokemonTypes.value = data.types[0].type.name;
-      pokemonHeight.value = data.height;
-      pokemonWeight.value = data.weight / 10;
-
-      pokemonPicture.value =
+      pokemonStats.value.id = data.id;
+      pokemonStats.value.name = data.name;
+      pokemonStats.value.types = data.types[0].type.name;
+      pokemonStats.value.height = data.height;
+      pokemonStats.value.weight = data.weight / 10;
+      pokemonStats.value.picture =
         data.sprites.other["official-artwork"]["front_default"];
     });
 }
