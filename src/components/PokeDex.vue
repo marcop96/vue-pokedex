@@ -75,9 +75,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-//import  new types
+import { ref, computed, onMounted } from "vue";
+
+//Ref declares REACTIVE TYPES
 import type { Ref } from "vue";
+//import  new types
 import type { PokemonStats, ObtainPokemonResponse } from "@/types/types";
 //components
 import PaginationSystem from "./PaginationSystem.vue";
@@ -98,11 +100,15 @@ const pokemonStats: Ref<PokemonStats> = ref({
   types: null,
   height: null,
   weight: null,
-  picture: "@/assets/pokemon_outline.png",
+  picture: null,
 });
 
 const activePage = ref("https://pokeapi.co/api/v2/pokemon?limit=20&offset=0");
-function obtainPokemons() {
+//function obtainPokemons() {
+//}
+
+//obtainPokemons();
+onMounted(() => {
   fetch(activePage.value)
     .then((response) => response.json())
     .then((data: ObtainPokemonResponse) => {
@@ -113,10 +119,7 @@ function obtainPokemons() {
       nextPokemonURL.value = data.next;
       totalPokemonCount.value = data.count;
     });
-}
-
-obtainPokemons();
-
+});
 function obtainPokemonInfo() {
   fetch(clickedPokemonURL.value)
     .then((response) => response.json())
