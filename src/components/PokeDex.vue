@@ -25,13 +25,9 @@
       </button>
     </div>
   </div>
-  <div class="flex items-center justify-start w-full">
+  <div class="flex items-center w-full">
     <!-- <div class="justify-self-start w-32 mt-11 ml-5"> -->
-    <n-scrollbar
-      class="justify-self-start w-36"
-      style="max-height: 500px"
-      trigger="none"
-    >
+    <n-scrollbar class="w-36" style="max-height: 500px" trigger="none">
       <ul>
         <li
           class="text-xl hover:text-red-500 hover:font-extrabold hover:cursor-pointer"
@@ -45,36 +41,34 @@
         </li>
       </ul>
     </n-scrollbar>
-    <!-- </div> -->
-    <div class="">
-      <n-card
-        title="Pokemon"
-        class="bg-yellow-400 w-72 items-center"
-        size="small"
-      >
-        <div class="img">
-          <img
-            :src="pokemonStats.picture as string"
-            class="object-scale-down"
-            width="300"
-            height="300"
-          />
-        </div>
-        <div class="info">
-          <ul>
-            <li class="font-bold text-xl">ID: {{ pokemonStats.id }}</li>
-            <li class="font-bold text-xl">Name: {{ pokemonStats.name }}</li>
-            <li class="font-bold text-xl">Type: {{ pokemonStats.types }}</li>
-            <li class="font-bold text-xl">
-              Height: {{ pokemonStats.height }} cm
-            </li>
-            <li class="font-bold text-xl">
-              Weight: {{ pokemonStats.weight }} kg
-            </li>
-          </ul>
-        </div>
-      </n-card>
-    </div>
+
+    <n-card
+      title="Pokemon"
+      class="justify-center bg-yellow-300 mt-4 w-max m-auto"
+      size="small"
+    >
+      <div class="img">
+        <img
+          :src="pokemonStats.picture as string"
+          class="object-scale-down"
+          width="300"
+          height="300"
+        />
+      </div>
+      <div class="info">
+        <ul>
+          <li class="font-bold text-xl">ID: {{ pokemonStats.id }}</li>
+          <li class="font-bold text-xl">Name: {{ pokemonStats.name }}</li>
+          <li class="font-bold text-xl">Type: {{ pokemonStats.types }}</li>
+          <li class="font-bold text-xl">
+            Height: {{ pokemonStats.height }} cm
+          </li>
+          <li class="font-bold text-xl">
+            Weight: {{ pokemonStats.weight }} kg
+          </li>
+        </ul>
+      </div>
+    </n-card>
   </div>
 
   <!-- <PaginationSystem :number-of-pages="countPokemons"></PaginationSystem> -->
