@@ -25,10 +25,9 @@
       </button>
     </div>
   </div>
-  <div class="flex items-center justify-start w-full">
-    <!-- <div class="justify-self-start w-32 mt-11 ml-5"> -->
+  <div class="flex space-x-2">
     <n-scrollbar
-      class="justify-self-start w-36"
+    class="w-24"
       style="max-height: 500px"
       trigger="none"
     >
@@ -45,11 +44,10 @@
         </li>
       </ul>
     </n-scrollbar>
-    <!-- </div> -->
-    <div class="">
+    <div class="w-full">
       <n-card
+        class="w-max mx-auto bg-red-500"
         title="Pokemon"
-        class="bg-yellow-400 w-72 items-center"
         size="small"
       >
         <div class="img">
