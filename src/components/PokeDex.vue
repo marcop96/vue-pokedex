@@ -33,10 +33,7 @@
         <li
           class="text-xl ml-4 text-white hover:text-red-500 hover:font-extrabold hover:cursor-pointer"
           v-for="pokemon in pokemons"
-          @click="
-            clickedPokemonURL = pokemon.url;
-            obtainPokemonInfo();
-          "
+          @click="obtainPokemonInfo(pokemon.url)"
         >
           {{ pokemon.name }}
         </li>
@@ -136,8 +133,8 @@ onMounted(() => {
 });
 
 //calls api, puts the response we're using into object 'pokemonStats'
-function obtainPokemonInfo() {
-  fetch(clickedPokemonURL.value)
+function obtainPokemonInfo(pokemon: string) {
+  fetch(pokemon)
     .then((response) => response.json())
     .then((data: PokemonStatsResponse) => {
       pokemonStats.value.id = data.id;
@@ -151,24 +148,10 @@ function obtainPokemonInfo() {
 }
 
 //SEARCH BAR
-// const userSearchInput = ref("fdsg");
-function obtainSearchedPokemonInfo(searchedPokemon: string) {
-  fetch(searchedPokemon)
-    .then((response) => response.json())
-    .then((data: PokemonStatsResponse) => {
-      pokemonStats.value.id = data.id;
-      pokemonStats.value.name = data.name;
-      pokemonStats.value.types = data.types.map((type) => type.type.name);
-      pokemonStats.value.height = data.height;
-      pokemonStats.value.weight = data.weight / 10;
-      pokemonStats.value.picture =
-        data.sprites.other["official-artwork"]["front_default"];
-    });
-}
+
 const userSearchInput = ref("fdsg");
-// const searchedPokemonURL = ref("");
 function searchPokemon() {
-  obtainSearchedPokemonInfo(
+  obtainPokemonInfo(
     `https://pokeapi.co/api/v2/pokemon/${userSearchInput.value}`
   );
 }
