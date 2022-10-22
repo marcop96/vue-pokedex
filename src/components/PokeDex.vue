@@ -5,7 +5,7 @@
       <input
         type="text"
         placeholder="Search a Pokemon"
-        class="input input-bordered w-96 bg-yellow-200"
+        class="input input-bordered w-96 bg-red-300"
       />
       <button class="btn btn-square bg-red-500">
         <svg
@@ -30,7 +30,7 @@
     <n-scrollbar class="w-36" style="max-height: 500px" trigger="none">
       <ul>
         <li
-          class="text-xl hover:text-red-500 hover:font-extrabold hover:cursor-pointer"
+          class="text-xl ml-4 text-white hover:text-red-500 hover:font-extrabold hover:cursor-pointer"
           v-for="pokemon in pokemons"
           @click="
             clickedPokemonURL = pokemon.url;
@@ -42,11 +42,7 @@
       </ul>
     </n-scrollbar>
 
-    <n-card
-      title="Pokemon"
-      class="justify-center bg-yellow-300 mt-4 w-max m-auto"
-      size="small"
-    >
+    <n-card class="justify-center bg-red-500 mt-4 w-max m-auto" size="small">
       <div class="img">
         <img
           :src="pokemonStats.picture as string"
@@ -57,13 +53,20 @@
       </div>
       <div class="info">
         <ul>
-          <li class="font-bold text-xl">ID: {{ pokemonStats.id }}</li>
-          <li class="font-bold text-xl">Name: {{ pokemonStats.name }}</li>
-          <li class="font-bold text-xl">Type: {{ pokemonStats.types }}</li>
-          <li class="font-bold text-xl">
+          <li class="font-bold text-white text-xl">
+            ID: {{ pokemonStats.id }}
+          </li>
+          <li class="font-bold text-white text-xl">
+            Name: {{ pokemonStats.name }}
+          </li>
+          <li class="font-bold text-white text-xl">
+            Type:
+            {{ pokemonStats.types && pokemonStats.types.join(", ") }}
+          </li>
+          <li class="font-bold text-white text-xl">
             Height: {{ pokemonStats.height }} cm
           </li>
-          <li class="font-bold text-xl">
+          <li class="font-bold text-white text-xl">
             Weight: {{ pokemonStats.weight }} kg
           </li>
         </ul>
@@ -75,13 +78,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { NScrollbar, NCard } from "naive-ui";
 
 //Ref declares REACTIVE TYPES
 import type { Ref } from "vue";
 //import  new types
-import type { PokemonStats, ObtainPokemonResponse } from "@/types/types";
+import type {
+  PokemonStats,
+  ObtainPokemonResponse,
+  PokemonStatsResponse,
+} from "@/types/types";
 //components
 // import PaginationSystem from "./PaginationSystem.vue";
 
@@ -95,9 +102,6 @@ import type { PokemonStats, ObtainPokemonResponse } from "@/types/types";
 const clickedPokemonURL = ref("");
 const nextPokemonURL: Ref<null | string> = ref("");
 const totalPokemonCount = ref();
-// const countPokemons = computed(() => {
-//   return Math.floor(totalPokemonCount.value / 20);
-// });
 
 const pokemons = ref();
 
@@ -132,10 +136,10 @@ onMounted(() => {
 function obtainPokemonInfo() {
   fetch(clickedPokemonURL.value)
     .then((response) => response.json())
-    .then((data) => {
+    .then((data: PokemonStatsResponse) => {
       pokemonStats.value.id = data.id;
       pokemonStats.value.name = data.name;
-      pokemonStats.value.types = data.types[0].type.name;
+      pokemonStats.value.types = data.types.map((type) => type.type.name);
       pokemonStats.value.height = data.height;
       pokemonStats.value.weight = data.weight / 10;
       pokemonStats.value.picture =

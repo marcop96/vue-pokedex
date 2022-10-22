@@ -18,3 +18,15 @@ export interface Results {
   name: string;
   url: string;
 }
+
+export interface PokemonType {
+  type: Results;
+}
+export interface PokemonStatsResponse {
+  id: number;
+  name: string;
+  types: PokemonType[];
+  height: number;
+  weight: number;
+  sprites: { other: { "official-artwork": { front_default: string } } };
+}
