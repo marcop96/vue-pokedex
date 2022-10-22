@@ -4,8 +4,8 @@
     <div class="input-group place-content-center mt-6">
       <input
         type="text"
-        placeholder="Search a Pokemon"
-        class="input input-bordered w-96 bg-red-300"
+        placeholder="Search a Pokemon by name or ID"
+        class="input input-bordered w-3/6 bg-red-300"
         v-model="userSearchInput"
       />
       <button class="btn btn-square bg-red-500" @click="searchPokemon">
@@ -59,7 +59,7 @@
           </li>
           <li class="font-bold text-white text-xl">
             Type:
-            {{ pokemonStats.types && pokemonStats.types.join(", ") }}
+            {{ pokemonStats.types && pokemonStats.types.join(" | ") }}
           </li>
           <li class="font-bold text-white text-xl">
             Height: {{ pokemonStats.height }} cm
@@ -78,31 +78,17 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { NScrollbar, NCard } from "naive-ui";
-
 //Ref declares reactive TYPES
 import type { Ref } from "vue";
-
 import type {
   PokemonStats,
   ObtainPokemonResponse,
   PokemonStatsResponse,
 } from "@/types/types";
-//components
-// import PaginationSystem from "./PaginationSystem.vue";
-
-// const obtainPokemons = ref({
-//   clickedPokemonURL: null,
-//   prevPokemonURL: null,
-//   nextPokemonURL: null,
-//   totalPokemonCount: null,
-// });
-
-const clickedPokemonURL = ref("");
 const nextPokemonURL: Ref<null | string> = ref("");
 const totalPokemonCount = ref();
 
 const pokemons = ref();
-
 //declares type null to avoid conflicts
 //Ref <PokemonStats> is the TYPE
 const pokemonStats: Ref<PokemonStats> = ref({
@@ -144,12 +130,13 @@ function obtainPokemonInfo(pokemon: string) {
       pokemonStats.value.weight = data.weight / 10;
       pokemonStats.value.picture =
         data.sprites.other["official-artwork"]["front_default"];
+      userSearchInput.value = "";
     });
 }
 
 //SEARCH BAR
 
-const userSearchInput = ref("fdsg");
+const userSearchInput = ref("");
 function searchPokemon() {
   obtainPokemonInfo(
     `https://pokeapi.co/api/v2/pokemon/${userSearchInput.value}`
