@@ -6,8 +6,9 @@
         type="text"
         placeholder="Search a Pokemon"
         class="input input-bordered w-96 bg-red-300"
+        v-model="userSearchInput"
       />
-      <button class="btn btn-square bg-red-500">
+      <button class="btn btn-square bg-red-500" @click="searchPokemon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6"
@@ -81,9 +82,9 @@
 import { ref, onMounted } from "vue";
 import { NScrollbar, NCard } from "naive-ui";
 
-//Ref declares REACTIVE TYPES
+//Ref declares reactive TYPES
 import type { Ref } from "vue";
-//import  new types
+
 import type {
   PokemonStats,
   ObtainPokemonResponse,
@@ -105,8 +106,8 @@ const totalPokemonCount = ref();
 
 const pokemons = ref();
 
-//declaro null para no tener errores en el futuro con los tipos
-
+//declares type null to avoid conflicts
+//Ref <PokemonStats> is the TYPE
 const pokemonStats: Ref<PokemonStats> = ref({
   id: null,
   name: null,
@@ -133,6 +134,8 @@ onMounted(() => {
       totalPokemonCount.value = data.count;
     });
 });
+
+//calls api, puts the response we're using into object 'pokemonStats'
 function obtainPokemonInfo() {
   fetch(clickedPokemonURL.value)
     .then((response) => response.json())
@@ -145,5 +148,28 @@ function obtainPokemonInfo() {
       pokemonStats.value.picture =
         data.sprites.other["official-artwork"]["front_default"];
     });
+}
+
+//SEARCH BAR
+// const userSearchInput = ref("fdsg");
+function obtainSearchedPokemonInfo(searchedPokemon: string) {
+  fetch(searchedPokemon)
+    .then((response) => response.json())
+    .then((data: PokemonStatsResponse) => {
+      pokemonStats.value.id = data.id;
+      pokemonStats.value.name = data.name;
+      pokemonStats.value.types = data.types.map((type) => type.type.name);
+      pokemonStats.value.height = data.height;
+      pokemonStats.value.weight = data.weight / 10;
+      pokemonStats.value.picture =
+        data.sprites.other["official-artwork"]["front_default"];
+    });
+}
+const userSearchInput = ref("fdsg");
+// const searchedPokemonURL = ref("");
+function searchPokemon() {
+  obtainSearchedPokemonInfo(
+    `https://pokeapi.co/api/v2/pokemon/${userSearchInput.value}`
+  );
 }
 </script>
