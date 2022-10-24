@@ -7,6 +7,7 @@
         placeholder="Search a Pokemon by name or ID"
         class="input input-bordered w-3/6 bg-red-300"
         v-model="userSearchInput"
+        pattern="^[a-zA-Z0-9]{4,10}$"
       />
       <button class="btn btn-square bg-red-500" @click="searchPokemon">
         <svg
@@ -43,7 +44,7 @@
     <n-card class="justify-center bg-red-500 mt-4 w-max m-auto" size="small">
       <div class="img">
         <img
-          :src="pokemonStats.picture as string"
+          :src="pokemonStats.picture"
           class="object-scale-down"
           width="300"
           height="300"
@@ -99,7 +100,7 @@ const pokemonStats: Ref<PokemonStats> = ref({
   weight: null,
   picture: null,
 });
-
+pokemonStats.value.picture = "src/assets/pokeball.png";
 const activePage = ref(
   "https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0"
 );
