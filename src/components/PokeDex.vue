@@ -107,7 +107,7 @@ const pokemonStats: Ref<PokemonStats> = ref({
   types: null,
   height: null,
   weight: null,
-  picture: "src/assets/pokeball.png",
+  picture: "..src/assets/pokeball.png",
 });
 const activePage = ref(
   "https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0"
@@ -134,9 +134,8 @@ function obtainPokemonInfo(pokemon: string) {
     types: null,
     height: null,
     weight: null,
-    picture: "src/assets/pokeball.png",
+    picture: "../src/assets/pokeball.png",
   };
-  console.log(pokemonStats.value);
   fetch(pokemon)
     .then((response) => response.json())
     .then((data: PokemonStatsResponse) => {
