@@ -5,9 +5,8 @@
       <input
         type="text"
         placeholder="Search a Pokemon by name or ID"
-        class="input input-bordered w-3/6 bg-red-300"
+        class="input input-bordered w-3/6 bg-red-300 border-4"
         v-model="userSearchInput"
-        pattern="^[a-zA-Z0-9]{4,10}$"
       />
       <button class="btn btn-square bg-red-500" @click="searchPokemon">
         <svg
@@ -33,7 +32,7 @@
       <ul>
         <li
           class="text-xl ml-4 text-white hover:text-red-500 hover:font-extrabold hover:cursor-pointer"
-          v-for="pokemon in pokemons"
+          v-for="pokemon in filterSearch || pokemons"
           @click="obtainPokemonInfo(pokemon.url)"
         >
           {{ pokemon.name }}
@@ -43,8 +42,15 @@
 
     <n-card class="justify-center bg-red-500 mt-4 w-max m-auto" size="small">
       <div class="img">
+        <!-- <img
+          v-show="!pokemonStats.picture"
+          src="src/assets/pokeball.png"
+          class="object-scale-down"
+          width="300"
+          height="300"
+        /> -->
         <img
-          :src="pokemonStats.picture"
+          :src="pokemonStats.picture as string"
           class="object-scale-down"
           width="300"
           height="300"
@@ -77,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { NScrollbar, NCard } from "naive-ui";
 //Ref declares reactive TYPES
 import type { Ref } from "vue";
@@ -85,22 +91,24 @@ import type {
   PokemonStats,
   ObtainPokemonResponse,
   PokemonStatsResponse,
+  Results,
 } from "@/types/types";
+
 const nextPokemonURL: Ref<null | string> = ref("");
 const totalPokemonCount = ref();
 
 const pokemons = ref();
 //declares type null to avoid conflicts
 //Ref <PokemonStats> is the TYPE
+
 const pokemonStats: Ref<PokemonStats> = ref({
   id: null,
   name: null,
   types: null,
   height: null,
   weight: null,
-  picture: null,
+  picture: "src/assets/pokeball.png",
 });
-pokemonStats.value.picture = "src/assets/pokeball.png";
 const activePage = ref(
   "https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0"
 );
@@ -112,15 +120,23 @@ onMounted(() => {
     .then((data: ObtainPokemonResponse) => {
       //for setting up the list
       pokemons.value = data.results;
-
       //by default next would be page 2
       nextPokemonURL.value = data.next;
       totalPokemonCount.value = data.count;
     });
 });
 
-//calls api, puts the response we're using into object 'pokemonStats'
+// fetches info for specific pokemon
 function obtainPokemonInfo(pokemon: string) {
+  pokemonStats.value = {
+    id: null,
+    name: "loading..",
+    types: null,
+    height: null,
+    weight: null,
+    picture: "src/assets/pokeball.png",
+  };
+  console.log(pokemonStats.value);
   fetch(pokemon)
     .then((response) => response.json())
     .then((data: PokemonStatsResponse) => {
@@ -135,12 +151,41 @@ function obtainPokemonInfo(pokemon: string) {
     });
 }
 
-//SEARCH BAR
-
 const userSearchInput = ref("");
+
 function searchPokemon() {
-  obtainPokemonInfo(
-    `https://pokeapi.co/api/v2/pokemon/${userSearchInput.value}`
-  );
+  let query;
+
+  //if it's an ID(number)
+  if (!isNaN(parseInt(userSearchInput.value, 10))) {
+    query = userSearchInput.value;
+  }
+
+  //if its not an ID(if its a string)
+  else if (filterSearch.value.length) {
+    //obtains the first element that matches criteria
+    query = filterSearch.value[0].name;
+  }
+  //when no conditions are met, doesnt fetch
+  else {
+    return;
+  }
+
+  obtainPokemonInfo(`https://pokeapi.co/api/v2/pokemon/${query}`);
 }
+//reactively filters pokemons based on user search
+
+const filterSearch = computed(() => {
+  if (!isNaN(parseInt(userSearchInput.value, 10))) {
+    return pokemons.value;
+  }
+
+  if (!pokemons.value) {
+    return [];
+    //pokemons.value != undefined
+  }
+  return pokemons.value.filter((pokemon: Results) =>
+    pokemon.name.includes(userSearchInput.value.toLowerCase())
+  );
+});
 </script>
