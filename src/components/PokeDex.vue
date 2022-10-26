@@ -121,6 +121,7 @@ onMounted(() => {
 
 // fetches info for specific pokemon
 function obtainPokemonInfo(pokemon: string) {
+  //placeholder before fetching
   pokemonStats.value = {
     id: null,
     name: "loading..",
