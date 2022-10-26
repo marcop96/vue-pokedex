@@ -26,7 +26,7 @@
       </button>
     </div>
   </div>
-  <div class="flex items-center w-full">
+  <div class="flex flex-col items-center w-full sm:flex-row">
     <!-- <div class="justify-self-start w-32 mt-11 ml-5"> -->
     <n-scrollbar class="w-36" style="max-height: 500px" trigger="none">
       <ul>
